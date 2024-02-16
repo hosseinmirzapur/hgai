@@ -11,16 +11,11 @@ import (
 )
 
 func RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/", BaseFunc)
 	mux.HandleFunc("/prompt", SendPrompt)
 }
 
 type Req struct {
 	Prompt string `json:"prompt,omitempty"`
-}
-
-func BaseFunc(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Fine!"))
 }
 
 func SendPrompt(w http.ResponseWriter, r *http.Request) {
