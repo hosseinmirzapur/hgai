@@ -11,7 +11,6 @@ func main() {
 	err := godotenv.Load()
 	if err != nil {
 		log.Println(err)
-		return
 	}
 
 	// run http server
