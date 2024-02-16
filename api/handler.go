@@ -1,49 +1,16 @@
-package main
+package handler
 
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
-	"log"
 	"net/http"
 	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/googleai"
 )
 
-func main() {
-	// load env variables
-	err := godotenv.Load()
-	if err != nil {
-		log.Println(err)
-	}
-
-	// run http server
-	runServer()
-}
-
-func runServer() {
-	// initialize mux server
-	mux := http.NewServeMux()
-
-	// register http routes
-	registerRoutes(mux)
-
-	// run server
-	port := os.Getenv("APP_PORT")
-	host := os.Getenv("APP_HOST")
-
-	log.Printf("Server started at %s:%s\n", host, port)
-	err := http.ListenAndServe(fmt.Sprintf(":%s", port), mux)
-	if err != nil {
-		log.Println("server cannot start, err:" + err.Error())
-		return
-	}
-}
-
-func registerRoutes(mux *http.ServeMux) {
+func RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/", BaseFunc)
 	mux.HandleFunc("/prompt", SendPrompt)
 }
