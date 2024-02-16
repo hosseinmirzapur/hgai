@@ -44,19 +44,19 @@ func runServer() {
 }
 
 func registerRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/", baseFunc)
-	mux.HandleFunc("/prompt", sendPrompt)
+	mux.HandleFunc("/", BaseFunc)
+	mux.HandleFunc("/prompt", SendPrompt)
 }
 
 type Req struct {
 	Prompt string `json:"prompt,omitempty"`
 }
 
-func baseFunc(w http.ResponseWriter, r *http.Request) {
+func BaseFunc(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Fine!"))
 }
 
-func sendPrompt(w http.ResponseWriter, r *http.Request) {
+func SendPrompt(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		handleErr(w, errors.New("method not allowed"))
 		return
