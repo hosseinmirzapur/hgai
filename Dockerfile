@@ -1,4 +1,4 @@
-FROM golang:latest as go-stage
+FROM golang:latest
 
 WORKDIR /app
 

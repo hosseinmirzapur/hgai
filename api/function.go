@@ -10,10 +10,6 @@ import (
 	"github.com/tmc/langchaingo/llms/googleai"
 )
 
-func RegisterRoutes(mux *http.ServeMux) {
-	mux.HandleFunc("/prompt", SendPrompt)
-}
-
 type Req struct {
 	Prompt string `json:"prompt,omitempty"`
 }
