@@ -5,13 +5,10 @@ import (
 	"os"
 
 	"github.com/google/generative-ai-go/genai"
+	"github.com/hosseinmirzapur/golangchain/dto"
 	"github.com/hosseinmirzapur/golangchain/utils"
 	"google.golang.org/api/option"
 )
-
-type PromptReq struct {
-	Prompt string `json:"prompt,omitempty"`
-}
 
 func SendPrompt(w http.ResponseWriter, r *http.Request) {
 	err := utils.Method(r, "POST")
@@ -21,7 +18,8 @@ func SendPrompt(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// json-decode request body
-	body, err := utils.DecodeSchema(r, PromptReq{})
+	req := dto.PromptReq{}
+	body, err := req.Decode(r)
 	if err != nil {
 		utils.ErrorResponse(w, "data validation error", http.StatusUnprocessableEntity)
 		return

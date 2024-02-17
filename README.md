@@ -24,4 +24,4 @@ MIT
 
 ## Endpoints available
 
-None for now.
+- [POST] https://hgai-three.vercel.app/api/generative/prompt
