@@ -6,7 +6,10 @@ import (
 )
 
 func SuccessResponse(w http.ResponseWriter, data any) {
-	jData, err := json.Marshal(data)
+	response := make(map[string]any)
+	response["data"] = data
+
+	jData, err := json.Marshal(response)
 	if err != nil {
 		HandleError(err)
 		return

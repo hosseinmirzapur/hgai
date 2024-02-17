@@ -45,6 +45,10 @@ func SendPrompt(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var answer []genai.Part
+
+	answer = append(answer, res.Candidates[0].Content.Parts...)
+
 	// print out response
-	utils.SuccessResponse(w, res)
+	utils.SuccessResponse(w, answer)
 }
