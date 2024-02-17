@@ -22,3 +22,6 @@ Feel free to open PRs and issues on this repositories, any suggestions are appre
 
 MIT
 
+## Endpoints available
+
+None for now.
