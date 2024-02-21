@@ -2,7 +2,12 @@ module github.com/hosseinmirzapur/golangchain
 
 go 1.21.6
 
-require github.com/google/generative-ai-go v0.7.0
+require (
+	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
+	github.com/google/generative-ai-go v0.7.0
+	github.com/joho/godotenv v1.5.1
+	google.golang.org/api v0.149.0
+)
 
 require (
 	cloud.google.com/go/ai v0.3.0 // indirect
@@ -21,7 +26,6 @@ require (
 	golang.org/x/sync v0.4.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
-	google.golang.org/api v0.149.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20231016165738-49dd2c1f3d0b // indirect

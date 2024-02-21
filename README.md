@@ -15,7 +15,7 @@ This application uses Google's Gemini LLM to respond to any user prompt.
 
 ## Contributions
 
-Feel free to open PRs and issues on this repositories, any suggestions are appreciated.
+Feel free to open PRs and issues on this repository, any suggestions are appreciated.
 
 
 ## License
@@ -24,4 +24,16 @@ MIT
 
 ## Endpoints available
 
-- [POST] https://hgai-three.vercel.app/api/generative/prompt
+- Base URL: https://hgai-three.vercel.app/api
+
+- [POST] /generative/prompt
+
+````js
+
+# Request Body
+
+{
+    "prompt": "some text in here", // required
+}
+
+````
