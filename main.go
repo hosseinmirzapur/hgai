@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net/http"
 
 	"github.com/hosseinmirzapur/golangchain/services/gemini"
 	"github.com/hosseinmirzapur/golangchain/services/telegram"
@@ -17,6 +19,14 @@ func main() {
 		utils.HandleError(err)
 		return
 	}
+
+	webhook, err := tgbot.GetWebhookInfo()
+	if err != nil {
+		utils.HandleError(err)
+		return
+	}
+
+	log.Println(webhook)
 	ch := telegram.GetUpdatesChan(tgbot)
 
 	ai, err := gemini.New()
@@ -25,6 +35,9 @@ func main() {
 		return
 	}
 	defer ai.Client.Close()
+
+	// serve http server concurrently with registering webhook
+	go serveHttp()
 
 	for received := range ch {
 		if received.Message == nil {
@@ -46,6 +59,18 @@ func main() {
 			)
 		}
 
-		log.Printf("%+v", parts)
+		tgbot.Send(
+			telegram.NewMessage(
+				received.Message.Chat.ID,
+				fmt.Sprintf("%+v", parts[0]),
+			),
+		)
 	}
+}
+
+func serveHttp() {
+	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		w.Write([]byte("Hello World!"))
+	})
+	http.ListenAndServe(":3000", nil)
 }
