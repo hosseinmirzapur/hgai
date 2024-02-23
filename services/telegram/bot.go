@@ -20,12 +20,13 @@ func New() (*tgbotapi.BotAPI, error) {
 
 func GetUpdatesChan(bot *tgbotapi.BotAPI) tgbotapi.UpdatesChannel {
 	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60 // seconds
+	u.Timeout = 60 // this technique is called long-polling
 	updates := bot.GetUpdatesChan(u)
 	return updates
 }
 
 func UserMessage(received tgbotapi.Update) tgbotapi.MessageConfig {
+
 	return tgbotapi.NewMessage(received.Message.Chat.ID, received.Message.Text)
 }
 

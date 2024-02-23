@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 
 	"github.com/hosseinmirzapur/golangchain/services/gemini"
 	"github.com/hosseinmirzapur/golangchain/services/telegram"
@@ -14,21 +13,22 @@ import (
 func main() {
 	godotenv.Load()
 
+	// initialize telegram bot
 	tgbot, err := telegram.New()
 	if err != nil {
 		utils.HandleError(err)
 		return
 	}
 
+	// get current bot webhook information
 	webhook, err := tgbot.GetWebhookInfo()
 	if err != nil {
 		utils.HandleError(err)
 		return
 	}
-
 	log.Println(webhook)
-	ch := telegram.GetUpdatesChan(tgbot)
 
+	// initialize google gemini
 	ai, err := gemini.New()
 	if err != nil {
 		utils.HandleError(err)
@@ -36,8 +36,8 @@ func main() {
 	}
 	defer ai.Client.Close()
 
-	// serve http server concurrently with registering webhook
-	go serveHttp()
+	// listen for any bot update / read from channel
+	ch := telegram.GetUpdatesChan(tgbot)
 
 	for received := range ch {
 		if received.Message == nil {
@@ -66,11 +66,4 @@ func main() {
 			),
 		)
 	}
-}
-
-func serveHttp() {
-	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		w.Write([]byte("Hello World!"))
-	})
-	http.ListenAndServe(":3000", nil)
 }
