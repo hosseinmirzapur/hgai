@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
+	"log"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/hosseinmirzapur/golangchain/config"
 	"github.com/hosseinmirzapur/golangchain/services/gemini"
 	"github.com/hosseinmirzapur/golangchain/services/telegram"
 	"github.com/hosseinmirzapur/golangchain/utils"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	godotenv.Load()
+	config.LoadEnv()
 
 	// initialize telegram bot
 	tgbot, err := telegram.New()
@@ -20,19 +20,16 @@ func main() {
 		return
 	}
 
-	// remove any associated webhook before establishing a new one
+	// remove any associated webhook before establishing new one
 	// this is the rawest form of calling the telegram API
-	// the `DeleteWebhook` method was not included in the library
-	response, err := tgbot.MakeRequest("", tgbotapi.Params{
-		"deleteWebhook": "True",
-	})
+	// the DeleteWebhook method was not included in the library
+	response, err := telegram.DeleteCurrentWHook(tgbot)
 	if err != nil {
 		utils.HandleError(err)
 		return
 	}
 	if !response.Ok {
-		utils.HandleError(fmt.Errorf("failed to delete webhook: %+v", response))
-		return
+		log.Println("unable to remove webhook, either it didn't exist or operation failed.")
 	}
 
 	// initialize google gemini

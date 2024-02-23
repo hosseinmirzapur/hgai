@@ -33,3 +33,9 @@ func UserMessage(received tgbotapi.Update) tgbotapi.MessageConfig {
 func NewMessage(chatID int64, text string) tgbotapi.MessageConfig {
 	return tgbotapi.NewMessage(chatID, text)
 }
+
+func DeleteCurrentWHook(bot *tgbotapi.BotAPI) (*tgbotapi.APIResponse, error) {
+	return bot.MakeRequest("deleteWebhook", tgbotapi.Params{
+		"drop_pending_updates": "True",
+	})
+}
