@@ -9,12 +9,12 @@ import (
 	"google.golang.org/api/option"
 )
 
-type gemini struct {
+type Gemini struct {
 	Client *genai.Client
 	model  *genai.GenerativeModel
 }
 
-func New() (*gemini, error) {
+func New() (*Gemini, error) {
 	client, err := genai.NewClient(
 		context.Background(),
 		option.WithAPIKey(
@@ -27,13 +27,13 @@ func New() (*gemini, error) {
 
 	model := client.GenerativeModel("gemini-pro")
 
-	return &gemini{
-		Client: client,
+	return &Gemini{
 		model:  model,
+		Client: client,
 	}, nil
 }
 
-func (g *gemini) Generate(prompt string) ([]genai.Part, error) {
+func (g *Gemini) Generate(prompt string) ([]genai.Part, error) {
 	resp, err := g.model.GenerateContent(context.Background(), genai.Text(prompt))
 	if err != nil {
 		return nil, err

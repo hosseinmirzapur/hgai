@@ -7,15 +7,13 @@ import (
 )
 
 func New() (*tgbotapi.BotAPI, error) {
-	bot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_BOT_API_KEY"))
+	tgbot, err := tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_BOT_API_KEY"))
 	if err != nil {
 		return nil, err
 	}
 
-	bot.Debug = true // verbose logs
-
-	return bot, nil
-
+	tgbot.Debug = true // verbose logs
+	return tgbot, nil
 }
 
 func GetUpdatesChan(bot *tgbotapi.BotAPI) tgbotapi.UpdatesChannel {
@@ -23,11 +21,6 @@ func GetUpdatesChan(bot *tgbotapi.BotAPI) tgbotapi.UpdatesChannel {
 	u.Timeout = 60 // this technique is called long-polling
 	updates := bot.GetUpdatesChan(u)
 	return updates
-}
-
-func UserMessage(received tgbotapi.Update) tgbotapi.MessageConfig {
-
-	return tgbotapi.NewMessage(received.Message.Chat.ID, received.Message.Text)
 }
 
 func NewMessage(chatID int64, text string) tgbotapi.MessageConfig {
