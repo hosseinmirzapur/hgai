@@ -1,16 +1,16 @@
 # Using Google Gemini Model within Go Application
 
-This application uses Google's Gemini LLM to respond to any user prompt.
+This application serves a telegram bot which runs Google's Gemini LLM and uses GCP API key to communicate with the cloud platform
 
 ## Features
 
-- This application is deployed on `Vercel Platform` via usage of `Vercel Serverless Functions`.
+- This application is deployed on `AWS EC2 Instance` on AWS Cloud.
 
-- The Go version of `Langchain` is used for the development.
+- The application's functionality is available on a telegram bot, using `Go Library for Telegram Bots`
 
-- Purely written in Go with no external libraries used rather than Langchain for its huge support over LLMs.
+- Purely written in Go with extreme attention on performance
 
-- An easy to use interface
+- An easy to use interface, thanks to the Telegram's ease of use.
 
 
 ## Contributions
@@ -22,18 +22,7 @@ Feel free to open PRs and issues on this repository, any suggestions are appreci
 
 MIT
 
-## Endpoints available
 
-- Base URL: https://hgai-three.vercel.app/api
+## More Info on the Bot
 
-- [POST] /generative/prompt
-
-````js
-
-# Request Body
-
-{
-    "prompt": "some text in here", // required
-}
-
-````
+Stay tuned, because a production-ready version of this bot will be available publicly soon!
