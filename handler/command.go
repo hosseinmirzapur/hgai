@@ -15,10 +15,9 @@ var commands = []string{
 	"balance",
 	"help",
 	"referral",
-	"clean",
-	"stop",
 }
 
+// @todo add commands in botfather
 func handleCommand(tools *utils.Tools, update *tgbotapi.Update) error {
 	var err error
 
@@ -33,10 +32,6 @@ func handleCommand(tools *utils.Tools, update *tgbotapi.Update) error {
 		err = handleHelp(tools, update)
 	case "referral":
 		err = handleReferral(tools, update)
-	case "clean":
-		err = handleClean(tools, update)
-	case "stop":
-		err = handleStop(tools, update)
 	default:
 		err = handleDefault(tools, update)
 	}
@@ -55,27 +50,49 @@ func handleStart(tools *utils.Tools, update *tgbotapi.Update) error {
 }
 
 func handlePay(tools *utils.Tools, update *tgbotapi.Update) error {
-	return nil
+	msg := telegram.NewMessage(
+		update.Message.Chat.ID,
+		"Soon...",
+	)
+	_, err := tools.Bot.Send(msg)
+	return err
 }
 
 func handleBalance(tools *utils.Tools, update *tgbotapi.Update) error {
-	return nil
+	msg := telegram.NewMessage(
+		update.Message.Chat.ID,
+		"Soon...",
+	)
+	_, err := tools.Bot.Send(msg)
+	return err
 }
 
 func handleHelp(tools *utils.Tools, update *tgbotapi.Update) error {
-	return nil
+	cmds, err := tools.Bot.GetMyCommands()
+	if err != nil {
+		return err
+	}
+
+	show := "available\n"
+
+	for _, cmd := range cmds {
+		show += fmt.Sprintf("%s: %s\n", cmd.Command, cmd.Description)
+	}
+
+	_, err = tools.Bot.Send(
+		telegram.NewMessage(update.Message.Chat.ID, show),
+	)
+	return err
+
 }
 
 func handleReferral(tools *utils.Tools, update *tgbotapi.Update) error {
-	return nil
-}
-
-func handleClean(tools *utils.Tools, update *tgbotapi.Update) error {
-	return nil
-}
-
-func handleStop(tools *utils.Tools, update *tgbotapi.Update) error {
-	return nil
+	msg := telegram.NewMessage(
+		update.Message.Chat.ID,
+		"Soon...",
+	)
+	_, err := tools.Bot.Send(msg)
+	return err
 }
 
 func handleDefault(tools *utils.Tools, update *tgbotapi.Update) error {
