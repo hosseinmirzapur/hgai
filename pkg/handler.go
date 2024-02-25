@@ -53,22 +53,24 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 		return
 	}
 
-	// t := NewTranslation(update.Message.Text)
-	// lang, err := t.DetectLanguage()
-	// if err != nil {
-	// 	msg := tgbotapi.NewMessage(chatID, err.Error())
-	// 	sendMessage(bot, msg)
-	// 	return
-	// }
+	t := NewTranslation(update.Message.Text)
+	lang, err := t.DetectLanguage()
+	if err != nil {
+		msg := tgbotapi.NewMessage(chatID, err.Error())
+		sendMessage(bot, msg)
+		return
+	}
 
-	// eng, err := t.Translate(lang, "en")
-	// if err != nil {
-	// 	msg := tgbotapi.NewMessage(chatID, err.Error())
-	// 	sendMessage(bot, msg)
-	// 	return
-	// }
+	eng, err := t.Translate(lang, "en")
+	if err != nil {
+		msg := tgbotapi.NewMessage(chatID, err.Error())
+		sendMessage(bot, msg)
+		return
+	}
 
-	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(update.Message.Text))
+	bot.Self.LanguageCode = lang
+
+	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(eng))
 }
 
 func handlePhotoMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
@@ -180,6 +182,8 @@ func generateResponse(bot *tgbotapi.BotAPI, chatID int64, initMsgID int, modelNa
 	edit.ParseMode = tgbotapi.ModeMarkdownV2
 	edit.DisableWebPagePreview = true
 	sendMessageWithRetry(bot, edit, tgbotapi.ModeMarkdownV2)
+
+	bot.Self.LanguageCode = "en"
 
 	time.Sleep(200 * time.Millisecond)
 }
