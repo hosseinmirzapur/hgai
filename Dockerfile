@@ -2,12 +2,14 @@ FROM golang:latest
 
 WORKDIR /app
 
+COPY go.* ./
+
+RUN go mod download
+
 COPY . .
 
-RUN go mod tidy && go build -o hgai
+RUN go build -ldflags="-s -w" -v -o hgai
 
 COPY . .
 
-CMD [ "/app/hgai" ]
-
-EXPOSE 3000
+CMD [ "./hgai" ]
