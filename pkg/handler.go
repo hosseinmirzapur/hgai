@@ -53,6 +53,21 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 		return
 	}
 
+	// t := NewTranslation(update.Message.Text)
+	// lang, err := t.DetectLanguage()
+	// if err != nil {
+	// 	msg := tgbotapi.NewMessage(chatID, err.Error())
+	// 	sendMessage(bot, msg)
+	// 	return
+	// }
+
+	// eng, err := t.Translate(lang, "en")
+	// if err != nil {
+	// 	msg := tgbotapi.NewMessage(chatID, err.Error())
+	// 	sendMessage(bot, msg)
+	// 	return
+	// }
+
 	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(update.Message.Text))
 }
 

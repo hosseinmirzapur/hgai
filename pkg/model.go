@@ -142,6 +142,10 @@ func outputResponse(iter *genai.GenerateContentResponseIterator, output chan str
 			break
 		}
 		if resp != nil && len(resp.Candidates) > 0 {
+			log.Println("-----------------------")
+			log.Println("Response: ", resp.Candidates)
+			log.Println("-----------------------")
+
 			firstCandidate := resp.Candidates[0]
 			if firstCandidate.Content != nil && len(firstCandidate.Content.Parts) > 0 {
 				part := fmt.Sprint(firstCandidate.Content.Parts[0])
