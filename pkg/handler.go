@@ -63,9 +63,12 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 		return
 	}
 
-	textPrompt = fmt.Sprintf("Answer this in %s: ```` %v ````", lang, textPrompt)
+	prompts := []genai.Part{
+		genai.Text(fmt.Sprintf("Try answering this in %s", lang)),
+		genai.Text(textPrompt),
+	}
 
-	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(textPrompt))
+	generateResponse(bot, chatID, initMsgID, TextModel, prompts...)
 
 }
 
@@ -125,9 +128,13 @@ func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[
 		log.Println(err)
 		return true
 	}
-	textPrompts = fmt.Sprintf("Answer this in %s: ```` %v ````", lang, textPrompts)
 
-	*prompts = append(*prompts, genai.Text(textPrompts))
+	morePrompts := []genai.Part{
+		genai.Text(fmt.Sprintf("Try answering this in %s", lang)),
+		genai.Text(textPrompts),
+	}
+
+	*prompts = append(*prompts, morePrompts...)
 	return false
 }
 
