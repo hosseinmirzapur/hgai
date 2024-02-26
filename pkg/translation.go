@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/bregydoc/gtranslate"
 	"github.com/pemistahl/lingua-go"
@@ -39,6 +40,6 @@ func (t *Translation) DetectLanguage() (string, error) {
 
 	t.Language = lang.IsoCode639_1().String()
 
-	return t.Language, nil
+	return strings.ToLower(t.Language), nil
 
 }
