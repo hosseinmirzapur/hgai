@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -54,22 +53,22 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 		return
 	}
 
-	t := NewTranslation(update.Message.Text)
-	lang, err := t.DetectLanguage()
-	if err != nil {
-		msg := tgbotapi.NewMessage(chatID, err.Error())
-		sendMessage(bot, msg)
-		return
-	}
-	var sent string
+	// t := NewTranslation(update.Message.Text)
+	// lang, err := t.DetectLanguage()
+	// if err != nil {
+	// 	msg := tgbotapi.NewMessage(chatID, err.Error())
+	// 	sendMessage(bot, msg)
+	// 	return
+	// }
+	// var sent string
 
-	if lang != "en" {
-		sent = fmt.Sprintf("%q", update.Message.Text)
-	} else {
-		sent = update.Message.Text
-	}
+	// if lang != "en" {
+	// 	sent = fmt.Sprintf("%q", update.Message.Text)
+	// } else {
+	// 	sent = update.Message.Text
+	// }
 
-	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(sent))
+	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(update.Message.Text))
 }
 
 func handlePhotoMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
