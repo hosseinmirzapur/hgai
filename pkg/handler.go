@@ -63,7 +63,7 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 		return
 	}
 
-	if lang != "en" {
+	if lang == "fa" {
 		textPrompt = fmt.Sprintf("%q", update.Message.Text)
 	}
 
@@ -127,7 +127,7 @@ func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[
 		log.Println(err)
 		return true
 	}
-	if lang != "en" {
+	if lang == "fa" {
 		textPrompts = fmt.Sprintf("%q", update.Message.Caption)
 	}
 
