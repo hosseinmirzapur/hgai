@@ -182,8 +182,6 @@ func generateResponse(bot *tgbotapi.BotAPI, chatID int64, initMsgID int, modelNa
 	edit.DisableWebPagePreview = true
 	sendMessageWithRetry(bot, edit, tgbotapi.ModeMarkdownV2)
 
-	bot.Self.LanguageCode = "en"
-
 	time.Sleep(200 * time.Millisecond)
 }
 
