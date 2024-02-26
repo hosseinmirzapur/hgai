@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -56,16 +55,16 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 
 	textPrompt := update.Message.Text
 
-	d := NewDetector(textPrompt)
-	lang, err := d.DetectLanguage()
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	// d := NewDetector(textPrompt)
+	// lang, err := d.DetectLanguage()
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return
+	// }
 
-	if lang == "fa" {
-		textPrompt = fmt.Sprintf("%q", update.Message.Text)
-	}
+	// if lang == "fa" {
+	// 	textPrompt = fmt.Sprintf("%q", update.Message.Text)
+	// }
 
 	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(textPrompt))
 
@@ -121,15 +120,15 @@ func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[
 		textPrompts = "Analyse the image and Describe it in English"
 	}
 
-	d := NewDetector(textPrompts)
-	lang, err := d.DetectLanguage()
-	if err != nil {
-		log.Println(err)
-		return true
-	}
-	if lang == "fa" {
-		textPrompts = fmt.Sprintf("%q", update.Message.Caption)
-	}
+	// d := NewDetector(textPrompts)
+	// lang, err := d.DetectLanguage()
+	// if err != nil {
+	// 	log.Println(err)
+	// 	return true
+	// }
+	// if lang == "fa" {
+	// 	textPrompts = fmt.Sprintf("%q", update.Message.Caption)
+	// }
 
 	*prompts = append(*prompts, genai.Text(textPrompts))
 	return false
