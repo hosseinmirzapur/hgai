@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -53,22 +54,21 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 		return
 	}
 
-	// t := NewTranslation(update.Message.Text)
-	// lang, err := t.DetectLanguage()
-	// if err != nil {
-	// 	msg := tgbotapi.NewMessage(chatID, err.Error())
-	// 	sendMessage(bot, msg)
-	// 	return
-	// }
-	// var sent string
+	textPrompt := update.Message.Text
 
-	// if lang != "en" {
-	// 	sent = fmt.Sprintf("%q", update.Message.Text)
-	// } else {
-	// 	sent = update.Message.Text
-	// }
+	d := NewDetector(textPrompt)
+	lang, err := d.DetectLanguage()
+	if err != nil {
+		log.Println(err)
+		return
+	}
 
-	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(update.Message.Text))
+	if lang != "en" {
+		textPrompt = fmt.Sprintf("%q", update.Message.Text)
+	}
+
+	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(textPrompt))
+
 }
 
 func handlePhotoMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
@@ -89,7 +89,7 @@ func handlePhotoMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 }
 
 func instantReply(update tgbotapi.Update, bot *tgbotapi.BotAPI, chatID int64) (int, bool) {
-	msg := tgbotapi.NewMessage(chatID, "Waiting...")
+	msg := tgbotapi.NewMessage(chatID, "Thinking...")
 	msg.ReplyToMessageID = update.Message.MessageID
 	initMsg, err := bot.Send(msg)
 	if err != nil {
@@ -118,8 +118,19 @@ func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[
 
 	textPrompts := update.Message.Caption
 	if textPrompts == "" {
-		textPrompts = "Analyse the image and Describe it in Chinese"
+		textPrompts = "Analyse the image and Describe it in English"
 	}
+
+	d := NewDetector(textPrompts)
+	lang, err := d.DetectLanguage()
+	if err != nil {
+		log.Println(err)
+		return true
+	}
+	if lang != "en" {
+		textPrompts = fmt.Sprintf("%q", update.Message.Caption)
+	}
+
 	*prompts = append(*prompts, genai.Text(textPrompts))
 	return false
 }
