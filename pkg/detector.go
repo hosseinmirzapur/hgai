@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/pemistahl/lingua-go"
 )
@@ -28,6 +27,6 @@ func (t *Detector) DetectLanguage() (string, error) {
 		return "", fmt.Errorf("input language not detected")
 	}
 
-	return strings.ToLower(lang.IsoCode639_1().String()), nil
+	return lang.String(), nil
 
 }
