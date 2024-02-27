@@ -147,7 +147,7 @@ func outputResponse(iter *genai.GenerateContentResponseIterator, output chan str
 				part := fmt.Sprint(firstCandidate.Content.Parts[0])
 				output <- part
 			} else {
-				output <- "no content in response"
+				output <- "sorry! your language is not supported yet :("
 			}
 		} else {
 			output <- "response is empty"
