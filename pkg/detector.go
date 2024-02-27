@@ -16,7 +16,7 @@ func NewDetector(text string) *Detector {
 	}
 }
 
-func (t *Detector) DetectLanguage() (string, error) {
+func (t *Detector) DetectLanguage() (lingua.Language, error) {
 	detector := lingua.NewLanguageDetectorBuilder().
 		FromAllLanguages().
 		Build()
@@ -24,9 +24,9 @@ func (t *Detector) DetectLanguage() (string, error) {
 	lang, exists := detector.DetectLanguageOf(t.text)
 
 	if !exists {
-		return "", fmt.Errorf("input language not detected")
+		return 0, fmt.Errorf("input language not detected")
 	}
 
-	return lang.String(), nil
+	return lang, nil
 
 }

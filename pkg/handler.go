@@ -47,13 +47,32 @@ Just send text or image to get response`
 
 func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	chatID := update.Message.Chat.ID
+	textPrompt := update.Message.Text
 
 	initMsgID, errFlag := instantReply(update, bot, chatID)
 	if errFlag {
 		return
 	}
 
-	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(update.Message.Text))
+	// detect input language
+	d := NewDetector(textPrompt)
+	lang, err := d.DetectLanguage()
+	if err != nil {
+		log.Println("could not detect the language")
+		return
+	}
+
+	// if not english, translate to english
+	if lang.IsoCode639_1().String() != "EN" {
+		t := NewTranslation()
+		textPrompt, err = t.ToEnglish(textPrompt)
+		if err != nil {
+			log.Println("could not get the translation")
+			return
+		}
+	}
+
+	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(textPrompt))
 
 }
 
