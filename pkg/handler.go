@@ -54,24 +54,24 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 		return
 	}
 
-	// detect input language
-	d := NewDetector()
-	lang, err := d.DetectLanguage(textPrompt)
-	if err != nil {
-		log.Println("could not detect the language")
-		return
-	}
+	// // detect input language
+	// d := NewDetector()
+	// lang, err := d.DetectLanguage(textPrompt)
+	// if err != nil {
+	// 	log.Println("could not detect the language")
+	// 	return
+	// }
 
-	// if not english, translate to english
-	if lang.IsoCode639_1().String() != "EN" {
-		t := NewTranslation()
-		textPrompt, err = t.ToEnglish(textPrompt)
+	// // if not english, translate to english
+	// if lang.IsoCode639_1().String() != "EN" {
+	// 	t := NewTranslation()
+	// 	textPrompt, err = t.ToEnglish(textPrompt)
 
-		if err != nil {
-			log.Println("could not get the translation")
-			return
-		}
-	}
+	// 	if err != nil {
+	// 		log.Println("could not get the translation")
+	// 		return
+	// 	}
+	// }
 
 	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(textPrompt))
 
@@ -127,24 +127,24 @@ func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[
 		textPrompts = "Analyse the image and Describe it in English"
 	}
 
-	// detect input language
-	d := NewDetector()
-	lang, err := d.DetectLanguage(textPrompts)
-	if err != nil {
-		log.Println("could not detect the language")
-		return true
-	}
+	// // detect input language
+	// d := NewDetector()
+	// lang, err := d.DetectLanguage(textPrompts)
+	// if err != nil {
+	// 	log.Println("could not detect the language")
+	// 	return true
+	// }
 
-	// if not english, translate to english
-	if lang.IsoCode639_1().String() != "EN" {
-		t := NewTranslation()
-		textPrompts, err = t.ToEnglish(textPrompts)
+	// // if not english, translate to english
+	// if lang.IsoCode639_1().String() != "EN" {
+	// 	t := NewTranslation()
+	// 	textPrompts, err = t.ToEnglish(textPrompts)
 
-		if err != nil {
-			log.Println("could not get the translation")
-			return true
-		}
-	}
+	// 	if err != nil {
+	// 		log.Println("could not get the translation")
+	// 		return true
+	// 	}
+	// }
 
 	*prompts = append(*prompts, genai.Text(textPrompts))
 	return false

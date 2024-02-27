@@ -143,6 +143,10 @@ func outputResponse(iter *genai.GenerateContentResponseIterator, output chan str
 		}
 		if resp != nil && len(resp.Candidates) > 0 {
 			firstCandidate := resp.Candidates[0]
+			if firstCandidate == nil {
+				output <- "no candidates available for your prompt"
+				break
+			}
 			if firstCandidate.Content != nil && len(firstCandidate.Content.Parts) > 0 {
 				part := fmt.Sprint(firstCandidate.Content.Parts[0])
 				output <- part
