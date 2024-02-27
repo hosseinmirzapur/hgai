@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -54,21 +53,7 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 		return
 	}
 
-	textPrompt := update.Message.Text
-
-	d := NewDetector(textPrompt)
-	lang, err := d.DetectLanguage()
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	prompts := []genai.Part{
-		genai.Text(fmt.Sprintf("Try answering this in %s", lang)),
-		genai.Text(textPrompt),
-	}
-
-	generateResponse(bot, chatID, initMsgID, TextModel, prompts...)
+	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text("سلام بر جمینای امروز حالت چطوره؟"))
 
 }
 
@@ -122,19 +107,7 @@ func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[
 		textPrompts = "Analyse the image and Describe it in English"
 	}
 
-	d := NewDetector(textPrompts)
-	lang, err := d.DetectLanguage()
-	if err != nil {
-		log.Println(err)
-		return true
-	}
-
-	morePrompts := []genai.Part{
-		genai.Text(fmt.Sprintf("Try answering this in %s", lang)),
-		genai.Text(textPrompts),
-	}
-
-	*prompts = append(*prompts, morePrompts...)
+	*prompts = append(*prompts, genai.Text(textPrompts))
 	return false
 }
 
