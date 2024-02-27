@@ -47,26 +47,26 @@ func InitModels() *genai.Client {
 	textModel = client.GenerativeModel(TextModel)
 	visionModel = client.GenerativeModel(VisionModel)
 
-	SafetySettings := []*genai.SafetySetting{
-		{
-			Category:  genai.HarmCategoryHarassment,
-			Threshold: genai.HarmBlockNone,
-		},
-		{
-			Category:  genai.HarmCategoryHateSpeech,
-			Threshold: genai.HarmBlockNone,
-		},
-		{
-			Category:  genai.HarmCategorySexuallyExplicit,
-			Threshold: genai.HarmBlockNone,
-		},
-		{
-			Category:  genai.HarmCategoryDangerousContent,
-			Threshold: genai.HarmBlockNone,
-		},
-	}
-	textModel.SafetySettings = SafetySettings
-	visionModel.SafetySettings = SafetySettings
+	// SafetySettings := []*genai.SafetySetting{
+	// 	{
+	// 		Category:  genai.HarmCategoryHarassment,
+	// 		Threshold: genai.HarmBlockNone,
+	// 	},
+	// 	{
+	// 		Category:  genai.HarmCategoryHateSpeech,
+	// 		Threshold: genai.HarmBlockNone,
+	// 	},
+	// 	{
+	// 		Category:  genai.HarmCategorySexuallyExplicit,
+	// 		Threshold: genai.HarmBlockNone,
+	// 	},
+	// 	{
+	// 		Category:  genai.HarmCategoryDangerousContent,
+	// 		Threshold: genai.HarmBlockNone,
+	// 	},
+	// }
+	// textModel.SafetySettings = SafetySettings
+	// visionModel.SafetySettings = SafetySettings
 
 	modelMap[TextModel] = textModel
 	modelMap[VisionModel] = visionModel
