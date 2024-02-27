@@ -53,7 +53,7 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 		return
 	}
 
-	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text("سلام بر جمینای امروز حالت چطوره؟"))
+	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(update.Message.Text))
 
 }
 
