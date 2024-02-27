@@ -54,6 +54,12 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 		return
 	}
 
+	d := NewDetector()
+	if !d.IsSupported(textPrompt) {
+		handleErrorViaBot(bot, chatID, fmt.Errorf("input language not supported"))
+		return
+	}
+
 	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(textPrompt))
 
 }
@@ -106,6 +112,12 @@ func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[
 	textPrompts := update.Message.Caption
 	if textPrompts == "" {
 		textPrompts = "Analyse the image and Describe it in English"
+	}
+
+	d := NewDetector()
+	if !d.IsSupported(textPrompts) {
+		handleErrorViaBot(bot, update.Message.Chat.ID, fmt.Errorf("input language not supported"))
+		return true
 	}
 
 	*prompts = append(*prompts, genai.Text(textPrompts))
