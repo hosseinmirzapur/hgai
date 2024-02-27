@@ -5,7 +5,7 @@ go 1.21.6
 require (
 	github.com/bregydoc/gtranslate v0.0.0-20200913051839-1bd07f6c1fc5
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
-	github.com/google/generative-ai-go v0.7.0
+	github.com/google/generative-ai-go v0.8.1-0.20240227190548-0bb2e23d3653
 	github.com/joho/godotenv v1.5.1
 	github.com/pemistahl/lingua-go v1.4.0
 	github.com/stretchr/testify v1.8.4
