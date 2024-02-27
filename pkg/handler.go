@@ -1,11 +1,11 @@
 package pkg
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"strings"
-	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/google/generative-ai-go/genai"
@@ -53,25 +53,6 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	if errFlag {
 		return
 	}
-
-	// // detect input language
-	// d := NewDetector()
-	// lang, err := d.DetectLanguage(textPrompt)
-	// if err != nil {
-	// 	log.Println("could not detect the language")
-	// 	return
-	// }
-
-	// // if not english, translate to english
-	// if lang.IsoCode639_1().String() != "EN" {
-	// 	t := NewTranslation()
-	// 	textPrompt, err = t.ToEnglish(textPrompt)
-
-	// 	if err != nil {
-	// 		log.Println("could not get the translation")
-	// 		return
-	// 	}
-	// }
 
 	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(textPrompt))
 
@@ -127,25 +108,6 @@ func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[
 		textPrompts = "Analyse the image and Describe it in English"
 	}
 
-	// // detect input language
-	// d := NewDetector()
-	// lang, err := d.DetectLanguage(textPrompts)
-	// if err != nil {
-	// 	log.Println("could not detect the language")
-	// 	return true
-	// }
-
-	// // if not english, translate to english
-	// if lang.IsoCode639_1().String() != "EN" {
-	// 	t := NewTranslation()
-	// 	textPrompts, err = t.ToEnglish(textPrompts)
-
-	// 	if err != nil {
-	// 		log.Println("could not get the translation")
-	// 		return true
-	// 	}
-	// }
-
 	*prompts = append(*prompts, genai.Text(textPrompts))
 	return false
 }
@@ -193,7 +155,7 @@ func getImageType(data []byte) string {
 func sendMessage(bot *tgbotapi.BotAPI, msg tgbotapi.MessageConfig) {
 	_, err := bot.Send(msg)
 	if err != nil {
-		log.Printf("Error sending message: %v\n", err)
+		handleErrorViaBot(bot, msg.ChatID, fmt.Errorf("typing status error"))
 		return
 	}
 }
@@ -205,19 +167,13 @@ func generateResponse(bot *tgbotapi.BotAPI, chatID int64, initMsgID int, modelNa
 	edit := tgbotapi.NewEditMessageText(chatID, initMsgID, response)
 	edit.ParseMode = tgbotapi.ModeMarkdownV2
 	edit.DisableWebPagePreview = true
-	sendMessageWithRetry(bot, edit, tgbotapi.ModeMarkdownV2)
 
-	time.Sleep(200 * time.Millisecond)
-}
+	if _, err := bot.Send(edit); err != nil {
+		edit.ParseMode = ""
 
-func sendMessageWithRetry(bot *tgbotapi.BotAPI, edit tgbotapi.EditMessageTextConfig, parseMode string) {
-	_, sendErr := bot.Send(edit)
-	if sendErr != nil {
-		log.Printf("Error sending message in %s: %v\n", parseMode, sendErr)
-		if parseMode == tgbotapi.ModeMarkdownV2 {
-			log.Printf("Retrying in plain text\n")
-			edit.ParseMode = ""
-			sendMessageWithRetry(bot, edit, "")
+		if _, err = bot.Send(edit); err != nil {
+			handleErrorViaBot(bot, chatID, fmt.Errorf("unable to send response"))
+			return
 		}
 	}
 }

@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"fmt"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -82,4 +83,10 @@ func contains(allowedUsers []string, userName string) bool {
 		}
 	}
 	return false
+}
+
+func handleErrorViaBot(bot *tgbotapi.BotAPI, chatID int64, err error) {
+	msg := tgbotapi.NewMessage(chatID, fmt.Sprintf("%v", err))
+
+	bot.Send(msg)
 }
