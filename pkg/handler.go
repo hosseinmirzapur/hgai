@@ -55,8 +55,8 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	}
 
 	// detect input language
-	d := NewDetector(textPrompt)
-	lang, err := d.DetectLanguage()
+	d := NewDetector()
+	lang, err := d.DetectLanguage(textPrompt)
 	if err != nil {
 		log.Println("could not detect the language")
 		return

@@ -6,22 +6,18 @@ import (
 	"github.com/pemistahl/lingua-go"
 )
 
-type Detector struct {
-	text string
+type Detector struct{}
+
+func NewDetector() *Detector {
+	return &Detector{}
 }
 
-func NewDetector(text string) *Detector {
-	return &Detector{
-		text: text,
-	}
-}
-
-func (t *Detector) DetectLanguage() (lingua.Language, error) {
+func (t *Detector) DetectLanguage(text string) (lingua.Language, error) {
 	detector := lingua.NewLanguageDetectorBuilder().
 		FromAllLanguages().
 		Build()
 
-	lang, exists := detector.DetectLanguageOf(t.text)
+	lang, exists := detector.DetectLanguageOf(text)
 
 	if !exists {
 		return 0, fmt.Errorf("input language not detected")
