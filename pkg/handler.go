@@ -66,6 +66,7 @@ func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	if lang.IsoCode639_1().String() != "EN" {
 		t := NewTranslation()
 		textPrompt, err = t.ToEnglish(textPrompt)
+
 		if err != nil {
 			log.Println("could not get the translation")
 			return
@@ -124,6 +125,25 @@ func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[
 	textPrompts := update.Message.Caption
 	if textPrompts == "" {
 		textPrompts = "Analyse the image and Describe it in English"
+	}
+
+	// detect input language
+	d := NewDetector()
+	lang, err := d.DetectLanguage(textPrompts)
+	if err != nil {
+		log.Println("could not detect the language")
+		return true
+	}
+
+	// if not english, translate to english
+	if lang.IsoCode639_1().String() != "EN" {
+		t := NewTranslation()
+		textPrompts, err = t.ToEnglish(textPrompts)
+
+		if err != nil {
+			log.Println("could not get the translation")
+			return true
+		}
 	}
 
 	*prompts = append(*prompts, genai.Text(textPrompts))
