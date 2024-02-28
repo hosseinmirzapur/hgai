@@ -47,20 +47,20 @@ Just send text or image to get response`
 
 func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	chatID := update.Message.Chat.ID
-	textPrompt := update.Message.Text
 
 	initMsgID, errFlag := instantReply(update, bot, chatID)
 	if errFlag {
 		return
 	}
 
-	d := NewDetector()
-	if !d.IsSupported(textPrompt) {
-		handleErrorViaBot(bot, chatID, fmt.Errorf("input language not supported"))
+	a := NewAWS()
+	trans, err := a.Translate(update.Message.Text)
+	if err != nil {
+		handleErrorViaBot(bot, chatID, fmt.Errorf(err.Error()))
 		return
 	}
 
-	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(textPrompt))
+	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(trans))
 
 }
 
@@ -114,13 +114,13 @@ func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[
 		textPrompts = "Analyse the image and Describe it in English"
 	}
 
-	d := NewDetector()
-	if !d.IsSupported(textPrompts) {
-		handleErrorViaBot(bot, update.Message.Chat.ID, fmt.Errorf("input language not supported"))
-		return true
+	a := NewAWS()
+	trans, err := a.Translate(textPrompts)
+	if err != nil {
+		handleErrorViaBot(bot, update.Message.Chat.ID, err)
 	}
 
-	*prompts = append(*prompts, genai.Text(textPrompts))
+	*prompts = append(*prompts, genai.Text(trans))
 	return false
 }
 

@@ -11,10 +11,12 @@ import (
 var Env Environment
 
 type Environment struct {
-	BotToken     string
-	GeminiApiKey string
-	AllowedUsers []string
-	DebugFlag    bool
+	BotToken           string
+	GeminiApiKey       string
+	AllowedUsers       []string
+	DebugFlag          bool
+	AWSAccessKey       string
+	AWSSecretAccessKey string
 }
 
 func loadEnv() {
@@ -29,10 +31,12 @@ func loadEnv() {
 	}
 
 	Env = Environment{
-		BotToken:     getEnv("BOT_TOKEN", ""),
-		GeminiApiKey: getEnv("GEMINI_API_KEY", ""),
-		AllowedUsers: allowedUsers,
-		DebugFlag:    getEnv("BOT_DEBUG_MODE", "false") == "true",
+		BotToken:           getEnv("BOT_TOKEN", ""),
+		GeminiApiKey:       getEnv("GEMINI_API_KEY", ""),
+		AllowedUsers:       allowedUsers,
+		DebugFlag:          getEnv("BOT_DEBUG_MODE", "false") == "true",
+		AWSAccessKey:       getEnv("AWS_ACCESS_KEY_ID", ""),
+		AWSSecretAccessKey: getEnv("AWS_SECRET_ACCESS_KEY", ""),
 	}
 
 	if Env.BotToken == "" {
@@ -40,6 +44,12 @@ func loadEnv() {
 	}
 	if Env.GeminiApiKey == "" {
 		log.Fatal("GEMINI_API_KEY must be set in environment variables or .env file")
+	}
+	if Env.AWSAccessKey == "" {
+		log.Fatal("AWS_ACCESS_KEY must be set in environment variables or .env file")
+	}
+	if Env.AWSSecretAccessKey == "" {
+		log.Fatal("AWS_SECRET_ACCESS_KEY must be set in environment variables or .env file")
 	}
 }
 
