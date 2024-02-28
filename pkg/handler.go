@@ -118,6 +118,7 @@ func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[
 	trans, err := a.Translate(textPrompts)
 	if err != nil {
 		handleErrorViaBot(bot, update.Message.Chat.ID, err)
+		return true
 	}
 
 	*prompts = append(*prompts, genai.Text(trans))
