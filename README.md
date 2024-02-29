@@ -1,16 +1,26 @@
-# Using Google Gemini Model within Go Application
+# Smartinex Bot
 
-This application serves a telegram bot which runs Google's Gemini LLM and uses GCP API key to communicate with the cloud platform
+![smartinex](smartinex.svg)
 
-## Features
+## About
 
-- This application is deployed on `AWS EC2 Instance` on AWS Cloud.
+**Smartinex Bot** is a single bot with all the AI abilities you might need
 
-- The application's functionality is available on a telegram bot, using `Go Library for Telegram Bots`
+## More on Smartinex Bot
 
-- Purely written in Go with extreme attention on performance
+- **Deployed on `AWS EC2 Instance` on AWS Cloud**
 
-- An easy to use interface, thanks to the Telegram's ease of use.
+- **Powered by [Google Gemini LLM](https://gemini.google.com)**
+
+- **Supports more than 75 languages from all around the world**
+
+- **Text-to-Text Generations**
+
+- **Multiple Images Processing**
+
+- **Purely in Go Programming Language thanks to [Go Library for Telegram Bots](https://github.com/go-telegram-bot-api/telegram-bot-api)**
+
+- **Extremely easy to use**
 
 
 ## Contributions
@@ -20,7 +30,7 @@ Feel free to open PRs and issues on this repository, any suggestions are appreci
 
 ## License
 
-MIT
+**All rights reserved - [Apache 2.0 License](LICENSE)**
 
 
 ## More Info on the Bot
