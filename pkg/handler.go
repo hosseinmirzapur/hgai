@@ -47,20 +47,45 @@ Just send text or image to get response`
 
 func handleTextMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	chatID := update.Message.Chat.ID
+	textPrompt := update.Message.Text
 
 	initMsgID, errFlag := instantReply(update, bot, chatID)
 	if errFlag {
 		return
 	}
 
-	a := NewAWS()
-	trans, err := a.Translate(update.Message.Text)
+	session := NewSession()
+
+	comprehend := NewComprehend(session)
+	inputLang, err := DetectLanguage(comprehend, textPrompt)
 	if err != nil {
-		handleErrorViaBot(bot, chatID, fmt.Errorf(err.Error()))
+		handleErrorViaBot(bot, chatID, err)
 		return
 	}
 
-	generateResponse(bot, chatID, initMsgID, TextModel, genai.Text(trans))
+	translate := NewTranslate(session)
+	translatedPrompt, err := TranslateTo(
+		translate,
+		textPrompt,
+		inputLang,
+		"en",
+	)
+
+	if err != nil {
+		handleErrorViaBot(bot, chatID, err)
+		return
+	}
+
+	textPrompt = translatedPrompt
+
+	a := &AWS{
+		sess:      session,
+		trans:     translate,
+		compr:     comprehend,
+		inputLang: inputLang,
+	}
+
+	generateResponse(a, bot, chatID, initMsgID, TextModel, genai.Text(textPrompt))
 
 }
 
@@ -73,12 +98,12 @@ func handlePhotoMessage(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	}
 
 	var prompts []genai.Part
-	errFlag = handlePhotoPrompts(update, bot, &prompts)
+	a, errFlag := handlePhotoPrompts(update, bot, &prompts)
 	if errFlag {
 		return
 	}
 
-	generateResponse(bot, chatID, initMsgID, VisionModel, prompts...)
+	generateResponse(a, bot, chatID, initMsgID, VisionModel, prompts...)
 }
 
 func instantReply(update tgbotapi.Update, bot *tgbotapi.BotAPI, chatID int64) (int, bool) {
@@ -95,16 +120,16 @@ func instantReply(update tgbotapi.Update, bot *tgbotapi.BotAPI, chatID int64) (i
 	return initMsg.MessageID, false
 }
 
-func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[]genai.Part) bool {
+func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[]genai.Part) (*AWS, bool) {
 	photo := update.Message.Photo[len(update.Message.Photo)-1]
 
 	photoURL, err := getURL(bot, photo.FileID)
 	if err != nil {
-		return true
+		return nil, true
 	}
 	imgData, err := getImageData(photoURL)
 	if err != nil {
-		return true
+		return nil, true
 	}
 	imgType := getImageType(imgData)
 	*prompts = append(*prompts, genai.ImageData(imgType, imgData))
@@ -114,15 +139,32 @@ func handlePhotoPrompts(update tgbotapi.Update, bot *tgbotapi.BotAPI, prompts *[
 		textPrompts = "Analyse the image and Describe it in English"
 	}
 
-	a := NewAWS()
-	trans, err := a.Translate(textPrompts)
+	session := NewSession()
+
+	comprehend := NewComprehend(session)
+	inputLang, err := DetectLanguage(comprehend, textPrompts)
 	if err != nil {
 		handleErrorViaBot(bot, update.Message.Chat.ID, err)
-		return true
+		return nil, true
 	}
 
-	*prompts = append(*prompts, genai.Text(trans))
-	return false
+	translate := NewTranslate(session)
+	translated, err := TranslateTo(translate, textPrompts, inputLang, "en")
+	if err != nil {
+		handleErrorViaBot(bot, update.Message.Chat.ID, err)
+		return nil, true
+	}
+	textPrompts = translated
+
+	a := &AWS{
+		sess:      session,
+		trans:     translate,
+		compr:     comprehend,
+		inputLang: inputLang,
+	}
+
+	*prompts = append(*prompts, genai.Text(textPrompts))
+	return a, false
 }
 
 func getURL(bot *tgbotapi.BotAPI, fileID string) (string, error) {
@@ -173,12 +215,17 @@ func sendMessage(bot *tgbotapi.BotAPI, msg tgbotapi.MessageConfig) {
 	}
 }
 
-func generateResponse(bot *tgbotapi.BotAPI, chatID int64, initMsgID int, modelName string, parts ...genai.Part) {
+func generateResponse(a *AWS, bot *tgbotapi.BotAPI, chatID int64, initMsgID int, modelName string, parts ...genai.Part) {
 	response := getModelResponse(chatID, modelName, parts)
+	translated, err := TranslateTo(a.trans, response, "en", a.inputLang)
+	if err != nil {
+		handleErrorViaBot(bot, chatID, err)
+		return
+	}
 
 	// Send the response back to the user.
-	edit := tgbotapi.NewEditMessageText(chatID, initMsgID, response)
-	edit.ParseMode = tgbotapi.ModeMarkdownV2
+	edit := tgbotapi.NewEditMessageText(chatID, initMsgID, translated)
+	edit.ParseMode = tgbotapi.ModeMarkdown
 	edit.DisableWebPagePreview = true
 
 	if _, err := bot.Send(edit); err != nil {
