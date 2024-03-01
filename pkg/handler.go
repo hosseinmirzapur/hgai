@@ -12,15 +12,26 @@ import (
 )
 
 func handleDefaultCommand(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Invalid command. Send /help to get help info")
+	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Invalid command. Send /help to get bot help info")
 	sendMessage(bot, msg)
 }
 
 func handleStartCommand(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
-	user := update.Message.From
-	startText := "Hi! " + user.FirstName + ", Welcome to Gemini Bot! Send /help to get help info"
-	msg := tgbotapi.NewMessage(update.Message.Chat.ID, startText)
-	sendMessage(bot, msg)
+	session := NewSession()
+	dynamo := NewDynamoDB(session)
+	chatID := update.Message.Chat.ID
+
+	msg, err := RegisterNewUser(dynamo, update.Message.From.ID)
+	if err != nil {
+		handleErrorViaBot(bot, chatID, err)
+		return
+	}
+	sendMessage(bot, tgbotapi.NewMessage(chatID, msg))
+
+	botUser := update.Message.From
+	startText := fmt.Sprintf("Hi %s!, Welcome to Smartinex Bot! Send /help to get help info", botUser.FirstName)
+
+	sendMessage(bot, tgbotapi.NewMessage(chatID, startText))
 }
 
 func handleClearCommand(update tgbotapi.Update, bot *tgbotapi.BotAPI) {
@@ -219,7 +230,7 @@ func generateResponse(a *AWS, bot *tgbotapi.BotAPI, chatID int64, initMsgID int,
 	response := getModelResponse(chatID, modelName, parts)
 	translated, err := TranslateTo(a.trans, response, "en", a.inputLang)
 	if err != nil {
-		handleErrorViaBot(bot, chatID, err)
+		handleErrorViaBot(bot, chatID, fmt.Errorf("session expired! send /clear to reset your session"))
 		return
 	}
 

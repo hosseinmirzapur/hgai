@@ -2,11 +2,14 @@ package pkg
 
 import (
 	"cmp"
+	"fmt"
 	"slices"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/comprehend"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/translate"
+	"github.com/hosseinmirzapur/golangchain/pkg/models"
 )
 
 type AWS struct {
@@ -34,6 +37,12 @@ func NewComprehend(sess *session.Session) *comprehend.Comprehend {
 // return a new translate service instance
 func NewTranslate(sess *session.Session) *translate.Translate {
 	svc := translate.New(sess)
+
+	return svc
+}
+
+func NewDynamoDB(sess *session.Session) *dynamodb.DynamoDB {
+	svc := dynamodb.New(sess)
 
 	return svc
 }
@@ -71,4 +80,28 @@ func TranslateTo(trans *translate.Translate, text, from, to string) (string, err
 	}
 
 	return *output.TranslatedText, nil
+}
+
+// register new bot user and save to dynamodb instance
+// if user doesn't exist, gets saved and a message is returned
+// if user exists, a message will be returned with no error
+func RegisterNewUser(dynamo *dynamodb.DynamoDB, id int64) (string, error) {
+	user := models.NewUser()
+
+	existingUser, err := user.FindByIDIn(dynamo, id)
+	if err != nil {
+		return "", err
+	}
+
+	if fmt.Sprint(existingUser.ID) == "" {
+		user.ID = id
+		_, err := user.SaveTo(dynamo)
+		if err != nil {
+			return "", err
+		}
+
+		return "Successful Registeration!", nil
+	}
+
+	return "Already Registered!", nil
 }

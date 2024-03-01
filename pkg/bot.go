@@ -62,11 +62,10 @@ func StartBot() {
 		if update.Message == nil {
 			continue
 		}
-		// If set AllowedUsers, check if the user is allowed
+		// If set AllowedUsers, bot gets in maintenance mode
 		if len(config.Env.AllowedUsers) > 0 {
 			if !contains(config.Env.AllowedUsers, update.Message.From.UserName) {
-				log.Printf("User [ %s ] is not allowed to use this bot", update.Message.From.UserName)
-				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "You are not allowed to use this bot")
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Bot is in maintenance mode ⚙️ ")
 				_, _ = bot.Send(msg)
 				continue
 			}
