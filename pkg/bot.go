@@ -3,6 +3,7 @@ package pkg
 import (
 	"fmt"
 	"log"
+	"time"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/hosseinmirzapur/golangchain/config"
@@ -41,7 +42,22 @@ func StartBot() {
 
 	updates := bot.GetUpdatesChan(u)
 
+	r := NewRedis()
+
 	for update := range updates {
+		// set rate limit over api
+		result, err := r.APIRateLimit()
+		if err != nil {
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, err.Error())
+			_, _ = bot.Send(msg)
+			continue
+		}
+
+		if result.Remaining == 0 {
+			_, _ = bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Processing..."))
+			time.Sleep(1 * time.Second)
+		}
+
 		// Ignore any non-Message Updates
 		if update.Message == nil {
 			continue

@@ -17,6 +17,9 @@ type Environment struct {
 	DebugFlag          bool
 	AWSAccessKey       string
 	AWSSecretAccessKey string
+	RedisAddr          string
+	RedisPassword      string
+	RedisDB            int
 }
 
 func loadEnv() {
