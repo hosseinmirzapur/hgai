@@ -53,7 +53,7 @@ func StartBot() {
 			continue
 		}
 
-		if result.Remaining == 0 {
+		if result.Allowed == 0 {
 			_, _ = bot.Send(tgbotapi.NewMessage(update.Message.Chat.ID, "Processing..."))
 			time.Sleep(1 * time.Second)
 		}
