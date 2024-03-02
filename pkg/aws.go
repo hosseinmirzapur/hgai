@@ -93,8 +93,8 @@ func RegisterNewUser(dynamo *dynamodb.DynamoDB, id int64) (string, error) {
 		return "", err
 	}
 
-	if fmt.Sprint(existingUser.ID) == "" {
-		user.ID = id
+	if fmt.Sprint(existingUser.UserID) == "" {
+		user.UserID = id
 		_, err := user.SaveTo(dynamo)
 		if err != nil {
 			return "", err

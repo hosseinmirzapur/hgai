@@ -15,7 +15,7 @@ const (
 
 type User struct {
 	// Unique User ID
-	ID           int64
+	UserID       int64
 	TextPrompts  uint
 	ImagePrompts uint
 }
@@ -27,7 +27,7 @@ type User struct {
 // if user provides a caption for the image, it's counted as 1 text prompts as well
 func NewUser() *User {
 	return &User{
-		ID:           -1,
+		UserID:       -1,
 		TextPrompts:  FreeImagePrompts,
 		ImagePrompts: FreeImagePrompts,
 	}
@@ -37,7 +37,7 @@ func NewUser() *User {
 // this method can be used to update `TextPrompts` and `ImagePrompts` value as well
 // `Username` should never be updated with this method or any other method
 func (u *User) SaveTo(service *dynamodb.DynamoDB) (*User, error) {
-	if u.ID == -1 {
+	if u.UserID == -1 {
 		return nil, fmt.Errorf("user ID not set")
 	}
 
@@ -63,7 +63,7 @@ func (u *User) FindByIDIn(service *dynamodb.DynamoDB, id int64) (*User, error) {
 	data, err := service.GetItem(&dynamodb.GetItemInput{
 		TableName: u.tableName(),
 		Key: map[string]*dynamodb.AttributeValue{
-			"ID": {
+			"UserID": {
 				N: aws.String(fmt.Sprint(id)),
 			},
 			"id": {
