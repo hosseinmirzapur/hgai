@@ -66,7 +66,7 @@ func (u *User) FindByIDIn(service *dynamodb.DynamoDB, id int64) (*User, error) {
 			"ID": {
 				N: aws.String(fmt.Sprint(id)),
 			},
-			"partitionKeyName": {
+			"id": {
 				S: aws.String("smartinex"),
 			},
 		},
