@@ -95,14 +95,6 @@ func CreateUsersTable(dynamo *dynamodb.DynamoDB) error {
 				AttributeName: aws.String("user_id"),
 				AttributeType: aws.String("N"),
 			},
-			{
-				AttributeName: aws.String("text_prompts"),
-				AttributeType: aws.String("N"),
-			},
-			{
-				AttributeName: aws.String("image_prompts"),
-				AttributeType: aws.String("N"),
-			},
 		},
 		// defining primary key(s)
 		KeySchema: []*dynamodb.KeySchemaElement{
