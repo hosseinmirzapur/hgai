@@ -21,7 +21,7 @@ func main() {
 	dynamoSvc := pkg.NewDynamoDB(sess)
 	err := pkg.CreateUsersTable(dynamoSvc)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	pkg.StartBot()

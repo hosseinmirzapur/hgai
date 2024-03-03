@@ -2,11 +2,9 @@ package pkg
 
 import (
 	"cmp"
-	"errors"
 	"fmt"
 	"slices"
 
-	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/comprehend"
@@ -111,11 +109,6 @@ func CreateUsersTable(dynamo *dynamodb.DynamoDB) error {
 	}
 
 	_, err := dynamo.CreateTable(params)
-
-	var resourceInUseErr *types.ResourceInUseException
-	if errors.As(err, &resourceInUseErr) {
-		return nil
-	}
 
 	return err
 }
