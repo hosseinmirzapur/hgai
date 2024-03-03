@@ -2,8 +2,6 @@ package pkg
 
 import (
 	"cmp"
-	"fmt"
-	"log"
 	"slices"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -125,9 +123,7 @@ func RegisterNewUser(dynamo *dynamodb.DynamoDB, id int64) (string, error) {
 		return "", err
 	}
 
-	log.Println(existingUser.UserID)
-
-	if fmt.Sprint(existingUser.UserID) == "" {
+	if existingUser.UserID == -1 {
 		user.UserID = id
 		_, err := user.SaveTo(dynamo)
 		if err != nil {
