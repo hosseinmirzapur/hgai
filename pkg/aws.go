@@ -112,8 +112,8 @@ func CreateUsersTable(dynamo *dynamodb.DynamoDB) error {
 
 	_, err := dynamo.CreateTable(params)
 
-	var tableAlreadyexists *types.TableAlreadyExistsException
-	if errors.As(err, &tableAlreadyexists) {
+	var resourceInUseErr *types.ResourceInUseException
+	if errors.As(err, &resourceInUseErr) {
 		return nil
 	}
 
