@@ -4,6 +4,7 @@ go 1.21.6
 
 require (
 	github.com/aws/aws-sdk-go v1.50.27
+	github.com/aws/aws-sdk-go-v2/service/dynamodb v1.30.1
 	github.com/go-redis/redis_rate/v10 v10.0.1
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/google/generative-ai-go v0.8.1-0.20240227190548-0bb2e23d3653
@@ -17,6 +18,7 @@ require (
 	cloud.google.com/go/compute v1.23.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/longrunning v0.5.2 // indirect
+	github.com/aws/smithy-go v1.20.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect

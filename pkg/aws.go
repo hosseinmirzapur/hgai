@@ -2,9 +2,12 @@ package pkg
 
 import (
 	"cmp"
+	"errors"
 	"fmt"
 	"slices"
 
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/comprehend"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
@@ -80,6 +83,49 @@ func TranslateTo(trans *translate.Translate, text, from, to string) (string, err
 	}
 
 	return *output.TranslatedText, nil
+}
+
+func CreateUsersTable(dynamo *dynamodb.DynamoDB) error {
+	params := &dynamodb.CreateTableInput{
+		// defining table name
+		TableName: aws.String("users"),
+		// defining table data schema
+		AttributeDefinitions: []*dynamodb.AttributeDefinition{
+			{
+				AttributeName: aws.String("user_id"),
+				AttributeType: aws.String("N"),
+			},
+			{
+				AttributeName: aws.String("text_prompts"),
+				AttributeType: aws.String("N"),
+			},
+			{
+				AttributeName: aws.String("image_prompts"),
+				AttributeType: aws.String("N"),
+			},
+		},
+		// defining primary key(s)
+		KeySchema: []*dynamodb.KeySchemaElement{
+			{
+				AttributeName: aws.String("user_id"),
+				KeyType:       aws.String("HASH"),
+			},
+		},
+		// define table's throughput ()
+		ProvisionedThroughput: &dynamodb.ProvisionedThroughput{
+			ReadCapacityUnits:  aws.Int64(10),
+			WriteCapacityUnits: aws.Int64(5),
+		},
+	}
+
+	_, err := dynamo.CreateTable(params)
+
+	var tableAlreadyexists *types.TableAlreadyExistsException
+	if errors.As(err, &tableAlreadyexists) {
+		return nil
+	}
+
+	return err
 }
 
 // register new bot user and save to dynamodb instance

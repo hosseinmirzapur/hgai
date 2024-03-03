@@ -15,9 +15,9 @@ const (
 
 type User struct {
 	// Unique User ID
-	UserID       int64
-	TextPrompts  uint
-	ImagePrompts uint
+	UserID       int64 `json:"user_id"`
+	TextPrompts  uint  `json:"text_prompts"`
+	ImagePrompts uint  `json:"image_prompts"`
 }
 
 // create a new user instance with default values
@@ -63,11 +63,8 @@ func (u *User) FindByIDIn(service *dynamodb.DynamoDB, id int64) (*User, error) {
 	data, err := service.GetItem(&dynamodb.GetItemInput{
 		TableName: u.tableName(),
 		Key: map[string]*dynamodb.AttributeValue{
-			"UserID": {
+			"user_id": {
 				N: aws.String(fmt.Sprint(id)),
-			},
-			"id": {
-				S: aws.String("smartinex"),
 			},
 		},
 	})

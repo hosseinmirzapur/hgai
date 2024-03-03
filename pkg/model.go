@@ -138,7 +138,7 @@ func outputResponse(iter *genai.GenerateContentResponseIterator, output chan str
 		}
 		if err != nil {
 			log.Println(err.Error())
-			output <- err.Error()
+			output <- "session expired! try sending /clear to start a new session."
 			break
 		}
 		if resp != nil && len(resp.Candidates) > 0 {

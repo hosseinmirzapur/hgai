@@ -16,5 +16,13 @@ func main() {
 			log.Fatal(err)
 		}
 	}(client)
+
+	sess := pkg.NewSession()
+	dynamoSvc := pkg.NewDynamoDB(sess)
+	err := pkg.CreateUsersTable(dynamoSvc)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	pkg.StartBot()
 }
